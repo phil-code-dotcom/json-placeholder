@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="text-gray-900">
+    <h1 class="font-bold text-3xl text-center p-4">JSON PLACEHOLDER API</h1>
+
+    <h3 class="font-bold text-2xl text-center p-4">Task 1: Get Requests</h3>
+
+    <h5 class="font-bold text-2xl text-center p-4">1. All Posts</h5>
+    <section id="all-post" class="max-w-screen-xl mx-auto p-16">
+        <div id="posts" class="sm:grid lg:grid-cols-3 sm:grid-cols-2 gap-10">
+            
+            <div aria-label="Loading..." role="status" class="flex items-center space-x-2">
+                <svg class="h-20 w-20 animate-spin stroke-gray-500" viewBox="0 0 256 256">
+                    <line x1="128" y1="32" x2="128" y2="64" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="24"></line>
+                    <line x1="195.9" y1="60.1" x2="173.3" y2="82.7" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="24"></line>
+                    <line x1="224" y1="128" x2="192" y2="128" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="24">
+                    </line>
+                    <line x1="195.9" y1="195.9" x2="173.3" y2="173.3" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="24"></line>
+                    <line x1="128" y1="224" x2="128" y2="192" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="24">
+                    </line>
+                    <line x1="60.1" y1="195.9" x2="82.7" y2="173.3" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="24"></line>
+                    <line x1="32" y1="128" x2="64" y2="128" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="24"></line>
+                    <line x1="60.1" y1="60.1" x2="82.7" y2="82.7" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="24">
+                    </line>
+                </svg>
+                <span class="text-4xl font-medium text-gray-500">Loading...</span>
+            </div>
+        </div>
+    </section>
+
+    <h5 class="font-bold text-2xl text-center p-4">2. Post number 5</h5>
+    <section id="" class="max-w-screen-xl mx-auto p-16">
+        <div id="post-5" class="sm:grid lg:grid-cols-3 sm:grid-cols-2 gap-10"></div>
+    </section>
+
+    <h3 class="font-bold text-2xl text-center p-4">Task 2: Post Request</h3>
+    <section id="post-server-response"></section>
+
+    <h3 class="font-bold text-2xl text-center p-4">Task 3: Put Request</h3>
+    <section id="put-server-response"></section>
+
+    <h3 class="font-bold text-2xl text-center p-4">Task 4: Patch Request</h3>
+    <section id="patch-server-response"></section>
+
+    <h3 class="font-bold text-2xl text-center p-4">Task 5: Delete Request</h3>
+    <section id="delete-server-response"></section>
+
+
+    <script>
+        const allPostSection = document.getElementById("posts");
+        const post5Section = document.getElementById("post-5");
+
+        const postResponse = document.getElementById("post-server-response");
+        const putResponse = document.getElementById("put-server-response");
+        const patchResponse = document.getElementById("patch-server-response");
+        const deleteResponse = document.getElementById("delete-server-response");
+
+        async function allPosts() {
+            fetch('https://jsonplaceholder.typicode.com/posts')
+                .then(response => response.json())
+                .then(json => {
+                    console.log(json)
+                    allPostSection.innerHTML = "";
+                    json.forEach(element => {
+                        let div = document.createElement("div")
+                        let post = `
+                            <div class="hover:bg-gray-900 hover:text-white transition duration-300 max-w-sm rounded overflow-hidden shadow-lg">
+                                <div class="py-4 px-8">
+                                    <a href="#">
+                                        <h4 class="text-lg mb-3 font-semibold">${element.title}</h4>
+                                    </a>
+                                    <p class="mb-2 text-sm text-gray-600">${element.body}</p>
+
+                                    <hr class="mt-4">
+                                </div>
+
+                            </div>
+                        `
+                        div.innerHTML = post;
+                        allPostSection.appendChild(div)
+                    });
+                })
+        }
+
+        async function post5Fetch() {
+            try {
+                fetch('https://jsonplaceholder.typicode.com/posts/5')
+                    .then(response => response.json())
+                    .then(json => {
+                        console.log(json)
+
+                        let div = document.createElement("div")
+                        let post = `
+                        <div class="hover:bg-gray-900 hover:text-white transition duration-300 max-w-sm rounded overflow-hidden shadow-lg">
+                            <div class="py-4 px-8">
+                                <a href="#">
+                                    <h4 class="text-lg mb-3 font-semibold">${json.title}</h4>
+                                </a>
+                                <p class="mb-2 text-sm text-gray-600">${json.body}</p>
+                                <hr class="mt-4">
+                            </div>
+                        </div>
+                    `
+                        div.innerHTML = post;
+                        post5Section.appendChild(div)
+                    })
+
+            } catch (error) {
+                console.error(error.message)
+            }
+        }
+
+        async function postRequest(title, body, userId) {
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: title,
+                    body: body,
+                    userId: userId
+                })
+            })
+                .then(response => response.json())
+                .then(json => {
+                    console.log('Success:', json)
+
+                    let response = document.createElement("div");
+                    response.classList.add("mx-auto", "flex", "flex-col", "items-center", "gap-4")
+
+                    response.innerHTML = `
+                        <p class="text-center font-semibold">Post request successful</p>
+                        <div class="hover:bg-gray-900 hover:text-white transition duration-300 max-w-sm rounded overflow-hidden shadow-lg">
+                            <div class="py-4 px-8">
+                                <a href="#">
+                                    <h4 class="text-lg mb-3 font-semibold">${json.title}</h4>
+                                </a>
+                                <p class="mb-2 text-sm text-gray-600">${json.body}</p>
+                                <hr class="mt-4">
+                            </div>
+                        </div>
+
+                    `
+                    postResponse.appendChild(response)
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+
+        async function putRequest(title, body) {
+            fetch('https://jsonplaceholder.typicode.com/posts/3', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: title,
+                    body: body
+                })
+            })
+                .then(response => response.json())
+                .then(json => {
+                    console.log('Success:', json)
+
+                    let response = document.createElement("div");
+                    response.classList.add("mx-auto", "flex", "flex-col", "items-center", "gap-4")
+
+                    response.innerHTML = `
+                        <p class="text-center font-semibold">Put request successful</p>
+                        <div class="hover:bg-gray-900 hover:text-white transition duration-300 max-w-sm rounded overflow-hidden shadow-lg">
+                            <div class="py-4 px-8">
+                                <a href="#">
+                                    <h4 class="text-lg mb-3 font-semibold">${json.title}</h4>
+                                </a>
+                                <p class="mb-2 text-sm text-gray-600">${json.body}</p>
+                                <hr class="mt-4">
+                            </div>
+                        </div>
+
+                    `
+                    putResponse.appendChild(response)
+
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+
+        async function patchRequest(title) {
+            fetch('https://jsonplaceholder.typicode.com/posts/5', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: title
+                })
+            })
+                .then(response => response.json())
+                .then(json => {
+                    console.log('Success:', json)
+
+                    let response = document.createElement("div");
+                    response.classList.add("mx-auto", "flex", "flex-col", "items-center", "gap-4")
+
+                    response.innerHTML = `
+                        <p class="text-center font-semibold">Patch request successful</p>
+                        <div class="hover:bg-gray-900 hover:text-white transition duration-300 max-w-sm rounded overflow-hidden shadow-lg">
+                            <div class="py-4 px-8">
+                                <a href="#">
+                                    <h4 class="text-lg mb-3 font-semibold">${json.title}</h4>
+                                </a>
+                                <p class="mb-2 text-sm text-gray-600">${json.body}</p>
+                                <hr class="mt-4">
+                            </div>
+                        </div>
+
+                    `
+                    patchResponse.appendChild(response)
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+
+        async function deleteRequest() {
+            fetch('https://jsonplaceholder.typicode.com/posts/7', {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(json => {
+                    console.log('Success:', json)
+
+                    let response = document.createElement("div");
+                    response.classList.add("mx-auto", "flex", "flex-col", "items-center", "gap-4")
+
+                    response.innerHTML = `
+                        <p class="text-center font-semibold">Delete request successful</p>
+                        <div class="hover:bg-gray-900 hover:text-white transition duration-300 max-w-sm rounded overflow-hidden shadow-lg">
+                            <div class="py-4 px-8">
+                                <a href="#">
+                                    <h4 class="text-lg mb-3 font-semibold">${json.title}</h4>
+                                </a>
+                                <p class="mb-2 text-sm text-gray-600">${json.body}</p>
+                                <hr class="mt-4">
+                            </div>
+                        </div>
+
+                    `
+                    deleteResponse.appendChild(response)
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+
+        allPosts()
+        post5Fetch();
+        postRequest("REq", "jcjkhjaksjkas", 200)
+        putRequest("reed", "hdjhsjdhjs");
+        patchRequest("post5")
+        deleteRequest()
+
+
+    </script>
+</body>
+
+</html>
